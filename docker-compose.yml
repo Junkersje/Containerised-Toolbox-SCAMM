@@ -1,0 +1,21 @@
+services:
+  web:
+    image: nginx:alpine
+    volumes:
+      - ./web:/usr/share/nginx/html:ro
+    ports:
+      - "8080:80"
+
+  checker:
+    build: .
+    environment:
+      CHECK_URL: http://web/
+      CHECK_INTERVAL: "5"
+      CHECK_TIMEOUT: "3"
+      SLOW_THRESHOLD: "1.0"
+      LOG_FILE: /logs/checker.log
+    volumes:
+      - ./logs:/logs
+    depends_on:
+      - web
+    restart: unless-stopped
