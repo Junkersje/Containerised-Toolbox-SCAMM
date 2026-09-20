@@ -1,14 +1,14 @@
-# 1. Base image med minimal Linux-distribution
+# 1. Base image with minimal Linux distribution
 FROM alpine:3.20
 
-# 2. Installer nødvendige dependencies (curl til netværk, gawk til decimaltal)
+# 2. Install necessary dependencies (curl for networking, gawk for decimal numbers)
 RUN apk add --no-cache curl gawk
 
-# 3. Kopiér scriptet ind i containerens system-PATH
+# 3. Copy the script into the container's system PATH
 COPY checker.sh /usr/local/bin/checker.sh
 
-# 4. Gør scriptet eksekverbart
+#4. Make the script executable
 RUN chmod +x /usr/local/bin/checker.sh
 
-# 5. Eksekveringskommando ved container-start
+# 5. Execution command on container start
 CMD ["/usr/local/bin/checker.sh"]

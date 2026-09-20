@@ -1,23 +1,22 @@
 #!/bin/sh
 
-# Værdierne kan gives af Docker Compose.
-# Teksten efter :- er en standardværdi, hvis variablen ikke er sat.
-URL="${CHECK_URL:-http://web/}"
+
+URL="${CHECK_URL:-http://web/}" #The text after :- is a default value if the variable is not set. 
 INTERVAL="${CHECK_INTERVAL:-5}"
 TIMEOUT="${CHECK_TIMEOUT:-3}"
 SLOW_THRESHOLD="${SLOW_THRESHOLD:-1.0}"
-LOG_FILE="${LOG_FILE:-/logs/checker.log}"
+LOG_FILE="${LOG_FILE:-/logs/checker.log}"  # This line makes sure that the data is stored within the log file, the data will not be lost even if you remove the container from docker desktop.
 
-# Sørg for, at mappen til logfilen findes.
-mkdir -p "$(dirname "$LOG_FILE")"
+mkdir -p "$(dirname "$LOG_FILE")" #This line ensure s that the directory for the log file exists.
 
 echo "Starting checker: url=$URL interval=${INTERVAL}s timeout=${TIMEOUT}s slow>${SLOW_THRESHOLD}s"
 
+# This line of code is a loop that runs every 5 seconds. While active it checks the status of the website as well as marking down the time, date and status in our log file.
 while true; do
   timestamp=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
 
-  # Send requestet, men gem ikke HTML-indholdet.
-  # curl udskriver kun statuskode og samlet svartid.
+
+  # This sends the request, does doesn't save the HTML content. While the curl command only gives the status code and answer time.
   result=$(curl \
     --silent \
     --show-error \
@@ -45,8 +44,8 @@ while true; do
     fi
   fi
 
-  # tee viser linjen på skærmen og føjer den til logfilen.
+  # tee shows the line on the screen and adds it to the log file.
   echo "$line" | tee -a "$LOG_FILE"
 
-  sleep "$INTERVAL"
+  sleep "$INTERVAL" #sleep prevents the loop from running faster than your computer can handle, while preventing the log file from being overloaded with data.
 done
